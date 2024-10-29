@@ -311,7 +311,7 @@ class InsureeService:
         elif "uuid" in data:
             insuree = Insuree.objects.filter(uuid=data["uuid"]).first()
             if not insuree:
-                if InsureeConfig.is_features_enabled:
+                if InsureeConfig.custom_chif_id:
                     min_num = 1
                     max_num = 99999
                     formatted_num = 0
@@ -322,7 +322,7 @@ class InsureeService:
                 insuree = Insuree.objects.create(**data)
             self.activate_policies_of_insuree(insuree, audit_user_id=data['audit_user_id'])
         if "uuid" not in data:
-            if InsureeConfig.is_features_enabled:
+            if InsureeConfig.custom_chif_id:
                 min_num = 1
                 max_num = 99999
                 formatted_num = 0
@@ -357,7 +357,7 @@ class InsureeService:
                 current_policy.save()
 
     def _create_or_update(self, insuree, photo_data=None):
-        if not InsureeConfig.is_features_enabled:
+        if not InsureeConfig.custom_chif_id:
             if not insuree.chf_id:
                 raise Exception ("config.no_chfid")
         validate_insuree(insuree)
@@ -375,7 +375,7 @@ class InsureeService:
             existing_insuree.save_history()
             insuree.id = existing_insuree.id
         else:
-            if InsureeConfig.is_features_enabled:
+            if InsureeConfig.custom_chif_id:
                 if insuree.head != True:
                     if not insuree.chf_id: #Si le CHFID n'a pas deja été généré on genere
                         # Si c'est le head insuree son chfid aura deja été généré grace au NIN de la famille
@@ -478,7 +478,7 @@ class FamilyService:
         
         if head_insuree_data:
             head_insuree_data["head"] = True
-            if InsureeConfig.is_features_enabled:
+            if InsureeConfig.custom_chif_id:
                 min_num = 1
                 max_num = 99999
                 formatted_num = 0

@@ -97,7 +97,7 @@ class FamilyLevels(models.TextChoices):
     ONE = "1", "1"
     TWO = "2", "2"
 
-class BaseModel(models.Model):
+class BaseInsureeFamily(models.Model):
     coordinates = models.CharField(
         db_column='Coordinates', max_length=255, blank=True, null=True)
     preferred_payment_method = models.CharField(
@@ -113,7 +113,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-class Family(core_models.VersionedModel, core_models.ExtendableModel, BaseModel):
+class Family(core_models.VersionedModel, core_models.ExtendableModel, BaseInsureeFamily):
     id = models.AutoField(db_column='FamilyID', primary_key=True)
     uuid = models.CharField(db_column='FamilyUUID',
                             max_length=36, default=uuid.uuid4, unique=True)
@@ -245,7 +245,7 @@ class InsureeStatusReason(core_models.VersionedModel):
         db_table = 'tblInsureeStatusReason'
 
 
-class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseModel):
+class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseInsureeFamily):
     id = models.AutoField(db_column='InsureeID', primary_key=True)
     uuid = models.CharField(db_column='InsureeUUID', max_length=36, default=uuid.uuid4, unique=True)
 
