@@ -254,7 +254,7 @@ class InsureeService:
         self.user = user
 
     @register_service_signal('insuree_service.create_or_update')
-    def create_or_update(self, data):
+    def create_or_update(self, data, auto_create_familly=True):
         photo = data.pop('photo', None)
         client_mutation_id = data.pop('client_mutation_id_save', None)
         from core import datetime
@@ -287,7 +287,7 @@ class InsureeService:
                 raise Exception("Invalid insuree number")
             else:
                 insuree = Insuree.objects.create(**data)
-                if not insuree.family:
+                if not insuree.family and auto_create_familly:
                     print("Auto Create Familly")
                     create_insuree_family(self.user, client_mutation_id, insuree)
                 # currentCheque = ChequeImportLine.objects.filter(chequeImportLineCode=data["chf_id"],chequeImportLineStatus='new')
@@ -358,7 +358,7 @@ class FamilyService:
     def create_or_update(self, data):
         head_insuree_data = data.pop('head_insuree')
         head_insuree_data["head"] = True
-        head_insuree = InsureeService(self.user).create_or_update(head_insuree_data)
+        head_insuree = InsureeService(self.user).create_or_update(head_insuree_data, auto_create_familly=False)
         data["head_insuree"] = head_insuree
         family_uuid = data.pop('uuid', None)
         if family_uuid:
