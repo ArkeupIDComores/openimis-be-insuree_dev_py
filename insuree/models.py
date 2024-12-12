@@ -137,10 +137,9 @@ class Family(core_models.VersionedModel, core_models.ExtendableModel):
                 members__chf_id__in=InsureeConfig.excluded_insuree_chfids
             )
         if settings.ROW_SECURITY and not user.is_imis_admin:
-            from location.schema import  LocationManager
             return queryset.filter(
-                        LocationManager().build_user_location_filter_query(user._u, prefix='location__parent__parent', loc_types=['D']))
-
+                LocationManager().build_user_location_filter_query(user._u, prefix='location__parent__parent', loc_types=['D'])
+            )
         return queryset
 
     class Meta:
@@ -318,7 +317,7 @@ class Insuree(core_models.VersionedModel, core_models.ExtendableModel):
         if settings.ROW_SECURITY and not user.is_imis_admin:
             return queryset.filter(
                 Q(LocationManager().build_user_location_filter_query(user._u, prefix='current_village__parent__parent', loc_types=['D']) |
-                        LocationManager().build_user_location_filter_query(user._u, prefix='family__location__parent__parent', loc_types=['D']))
+                LocationManager().build_user_location_filter_query(user._u, prefix='family__location__parent__parent', loc_types=['D']))
             )
 
         return queryset
@@ -360,8 +359,7 @@ class InsureePolicy(core_models.VersionedModel):
         if settings.ROW_SECURITY and user.is_anonymous:
             return queryset.filter(id=-1)
         if settings.ROW_SECURITY and not user.is_imis_admin:
-                        # Limit the list by the logged in user location mapping
-            return queryset.filter(                
+            return queryset.filter(
                 Q(LocationManager().build_user_location_filter_query(user._u, prefix='insuree__current_village__parent__parent', loc_types=['D']) |
                     LocationManager().build_user_location_filter_query(user._u, prefix='insuree__family__location__parent__parent', loc_types=['D']))
             )
