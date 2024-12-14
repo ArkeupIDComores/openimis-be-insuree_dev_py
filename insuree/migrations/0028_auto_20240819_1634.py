@@ -11,26 +11,26 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveIndex(
-            model_name='family',
-            name='tblFamilies_LegacyI_5129e4_idx',
-        ),
-        migrations.RemoveIndex(
-            model_name='insuree',
-            name='tblInsuree_LegacyI_a4548b_idx',
-        ),
-        migrations.AlterField(
-            model_name='insuree',
-            name='deathReason',
-            field=models.CharField(blank=True, db_column='DeathReason', max_length=500, null=True),
-        ),
-        migrations.AlterField(
-            model_name='insuree',
-            name='dod',
-            field=core.fields.DateField(blank=True, db_column='DOD', null=True),
-        ),
-        migrations.AddIndex(
-            model_name='family',
-            index=models.Index(fields=['legacy_id', 'validity_from', 'validity_to', 'uuid'], name='tblFamilies_LegacyI_5129e4_idx'),
-        ),
+        # migrations.RemoveIndex(
+        #     model_name='family',
+        #     name='tblFamilies_LegacyI_5129e4_idx',
+        # ),
+        # migrations.RemoveIndex(
+        #     model_name='insuree',
+        #     name='tblInsuree_LegacyI_a4548b_idx',
+        # ),
+        # migrations.AlterField(
+        #     model_name='insuree',
+        #     name='deathReason',
+        #     field=models.CharField(blank=True, db_column='DeathReason', max_length=500, null=True),
+        # ),
+        # migrations.AlterField(
+        #     model_name='insuree',
+        #     name='dod',
+        #     field=core.fields.DateField(blank=True, db_column='DOD', null=True),
+        # ),
+        # migrations.AddIndex(
+        #     model_name='family',
+        #     index=models.Index(fields=['legacy_id', 'validity_from', 'validity_to', 'uuid'], name='tblFamilies_LegacyI_5129e4_idx'),
+        # ),
     ]
