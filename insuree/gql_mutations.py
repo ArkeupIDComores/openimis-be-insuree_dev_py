@@ -5,7 +5,7 @@ import pathlib
 import base64
 import graphene
 from insuree.apps import InsureeConfig
-from insuree.services import validate_insuree_number, InsureeService, FamilyService, InsureePolicyService
+from insuree.services import validate_insuree_number, InsureeService, FamilyService, InsureePolicyService, create_insuree_family
 
 from core.schema import OpenIMISMutation
 from django.contrib.auth.models import AnonymousUser
