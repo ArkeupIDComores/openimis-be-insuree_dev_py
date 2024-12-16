@@ -111,8 +111,8 @@ class UpdateFamilyInputType(FamilyInputType):
 
 
 def update_or_create_insuree(data, user):
-    data["client_mutation_id_save"] = data.pop('client_mutation_id', None)
-    # data.pop('client_mutation_id', None)
+    #data["client_mutation_id_save"] = data.pop('client_mutation_id', None)
+    data.pop('client_mutation_id', None)
     data.pop('client_mutation_label', None)
     return InsureeService(user).create_or_update(data)
 

@@ -350,8 +350,9 @@ class InsureeService:
 
     @register_service_signal('insuree_service.create_or_update')
     def create_or_update(self, data):
+        # client_mutation_id = data.pop('client_mutation_id_save', None)
         if "uuid" in data:
-            existing_insuree = Insuree.objects.prefetch_related("photo").filter(uuid=data["uuid"]).first()
+            existing_insuree = Insuree.objects.filter(uuid=data["uuid"]).first()
             if existing_insuree:
                 print("Old Mail ", existing_insuree.email)
                 if 'email' in data:
@@ -365,6 +366,20 @@ class InsureeService:
                         # if the patient is NON HIV, you can't set him as HIV
                         if new_email == 'newhivuser_XM7dw70J0M3N@gmail.com':
                             raise Exception("Sorry you can't pass an insuree from non HIV to HIV")
+        #     existing_insuree.save_history()
+        #     # reset the non required fields
+        #     # (each update is 'complete', necessary to be able to set 'null')
+        #     reset_insuree_before_update(existing_insuree)
+        #     [setattr(existing_insuree, key, data[key]) for key in data]
+        # else:
+        #     errors = validate_insuree_number(data["chf_id"])
+        #     if errors:
+        #         raise Exception("Invalid insuree number")
+        #     else:
+        #         insuree = Insuree.objects.create(**data)
+        #         if not insuree.family:
+        #             print("Auto Create Familly")
+        #             create_insuree_family(self.user, client_mutation_id, insuree)
         photo_data = data.pop('photo', None)
         from core import datetime
         now = datetime.datetime.now()
