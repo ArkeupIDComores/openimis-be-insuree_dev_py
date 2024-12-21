@@ -196,6 +196,7 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
             filters += [Q(LocationManager().build_user_location_filter_query(info.context.user._u, prefix='current_village__parent__parent', loc_types=['D']) |
                         LocationManager().build_user_location_filter_query(info.context.user._u, prefix='family__location__parent__parent', loc_types=['D']))]
 
+        print("value ", Insuree.objects.filter(*filters).all())
         return gql_optimizer.query(Insuree.objects.filter(*filters).all(), info)
 
     def resolve_family_members(self, info, **kwargs):
@@ -288,7 +289,6 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
         ids = Family.objects.select_related('head_insuree', 'location', 'family_type', 'confirmation_type').filter(*filters).values_list('id')
         # dinstinct_queryset = Family.objects.filter(id__in=ids)
         dinstinct_queryset = Family.objects.select_related('head_insuree', 'location', 'family_type', 'confirmation_type').filter(id__in=ids)
-        print("result ", gql_optimizer.query(dinstinct_queryset.all(), info))
         return gql_optimizer.query(dinstinct_queryset.all(), info)
 
     def resolve_insuree_officers(self, info, **kwargs):
