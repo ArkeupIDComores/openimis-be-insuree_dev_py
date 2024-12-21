@@ -198,6 +198,7 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
 
         print("filters ", *filters)
         print("value ", Insuree.objects.filter(*filters).all())
+        print("print value2 ", gql_optimizer.query(Insuree.objects.filter(*filters).all(), info))
         return gql_optimizer.query(Insuree.objects.filter(*filters).all(), info)
 
     def resolve_family_members(self, info, **kwargs):
