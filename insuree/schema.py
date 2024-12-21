@@ -288,6 +288,7 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
         ids = Family.objects.select_related('head_insuree', 'location', 'family_type', 'confirmation_type').filter(*filters).values_list('id')
         # dinstinct_queryset = Family.objects.filter(id__in=ids)
         dinstinct_queryset = Family.objects.select_related('head_insuree', 'location', 'family_type', 'confirmation_type').filter(id__in=ids)
+        print("result ", gql_optimizer.query(dinstinct_queryset.all(), info))
         return gql_optimizer.query(dinstinct_queryset.all(), info)
 
     def resolve_insuree_officers(self, info, **kwargs):
