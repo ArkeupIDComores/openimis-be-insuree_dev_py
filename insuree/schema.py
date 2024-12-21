@@ -60,8 +60,8 @@ class FamiliesConnectionField(OrderedDjangoFilterConnectionField):
         return OrderedDjangoFilterConnectionField.orderBy(qs, args)
 
 
-class Query(ExportableQueryMixin, graphene.ObjectType):
-    exportable_fields = ['insurees']
+class Query(graphene.ObjectType):
+    # exportable_fields = ['insurees']
 
 
     can_add_insuree = graphene.Field(
