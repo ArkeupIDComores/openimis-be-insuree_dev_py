@@ -193,6 +193,7 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
 
         if not info.context.user._u.is_imis_admin and (kwargs.get('ignore_location') == False or kwargs.get('ignore_location') is None):
             # Limit the list by the logged in user location mapping
+            print("filter by current village")
             filters += [Q(LocationManager().build_user_location_filter_query(info.context.user._u, prefix='current_village__parent__parent', loc_types=['D']) |
                         LocationManager().build_user_location_filter_query(info.context.user._u, prefix='family__location__parent__parent', loc_types=['D']))]
 
