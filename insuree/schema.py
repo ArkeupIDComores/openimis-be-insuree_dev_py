@@ -201,7 +201,8 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
         print("value ", Insuree.objects.filter(*filters).all())
         print("print value2 ", gql_optimizer.query(Insuree.objects.filter(*filters).all(), info))
         print("print value3 ",str(gql_optimizer.query(Insuree.objects.filter(*filters).all(), info).query))
-        return gql_optimizer.query(Insuree.objects.filter(*filters).all(), info)
+        # return gql_optimizer.query(Insuree.objects.filter(*filters).all(), info)
+        return gql_optimizer.query(Insuree.objects.select_related('family', 'gender', 'health_facility', 'current_village').filter(*filters).all(), info)
 
     def resolve_family_members(self, info, **kwargs):
         if not info.context.user.has_perms(InsureeConfig.gql_query_insuree_family_members):
