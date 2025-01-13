@@ -137,7 +137,6 @@ class Family(core_models.VersionedModel, core_models.ExtendableModel):
                 members__chf_id__in=InsureeConfig.excluded_insuree_chfids
             )
         if settings.ROW_SECURITY and not user.is_imis_admin and not InsureeConfig.no_location_check:
-            print("Dans les families!!!!!!")
             return queryset.filter(
                 LocationManager().build_user_location_filter_query(user._u, prefix='location__parent__parent', loc_types=['D'])
             )
