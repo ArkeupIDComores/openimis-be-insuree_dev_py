@@ -197,10 +197,6 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
             filters += [Q(LocationManager().build_user_location_filter_query(info.context.user._u, prefix='current_village__parent__parent', loc_types=['D']) |
                         LocationManager().build_user_location_filter_query(info.context.user._u, prefix='family__location__parent__parent', loc_types=['D']))]
 
-        print("filters ", *filters)
-        print("value ", Insuree.objects.filter(*filters).all())
-        print("print value2 ", gql_optimizer.query(Insuree.objects.filter(*filters).all(), info))
-        print("print value3 ",str(gql_optimizer.query(Insuree.objects.filter(*filters).all(), info).query))
         # return gql_optimizer.query(Insuree.objects.filter(*filters).all(), info)
         return gql_optimizer.query(Insuree.objects.select_related('family', 'gender', 'health_facility', 'current_village').filter(*filters).all(), info)
 
