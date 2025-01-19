@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('insuree', '0024_alter_jsonext_column'),
+        ('insuree', '0028_auto_20240819_1634'),
     ]
 
     operations = [
