@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.AddField(
-        #     model_name='confirmationtype',
-        #     name='is_confirmation_number_required',
-        #     field=models.BooleanField(default=False),
-        # ),
+        migrations.AddField(
+            model_name='confirmationtype',
+            name='is_confirmation_number_required',
+            field=models.BooleanField(default=False),
+        ),
     ]

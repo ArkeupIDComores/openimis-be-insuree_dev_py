@@ -359,7 +359,7 @@ class InsureePolicy(core_models.VersionedModel):
             user = user.context.user
         if settings.ROW_SECURITY and user.is_anonymous:
             return queryset.filter(id=-1)
-        if settings.ROW_SECURITY and not user.is_imis_admin:
+        if settings.ROW_SECURITY and not user.is_imis_admin and not LocationConfig.no_location_check:
             return queryset.filter(
                 Q(LocationManager().build_user_location_filter_query(user._u, prefix='insuree__current_village__parent__parent', loc_types=['D']) |
                     LocationManager().build_user_location_filter_query(user._u, prefix='insuree__family__location__parent__parent', loc_types=['D']))
