@@ -335,8 +335,8 @@ def create_insuree_family(user, insuree):
     # FamilyMutation.object_mutated(
     #     user, client_mutation_id=client_mutation_id, family=family)
 
-    insuree.family = family
-    insuree.save()
+    # insuree.family = family
+    # insuree.save()
     # InsureeMutation.object_mutated(
     #         user, client_mutation_id=client_mutation_id, insuree=insuree)
 
