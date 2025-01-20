@@ -288,57 +288,57 @@ def validate_insuree(insuree):
     else:
         validate_insuree_data(insuree)
 
-def create_insuree_family(user,client_mutation_id, insuree):
+def create_insuree_family(user, insuree):
     data = {}
     data['audit_user_id'] = user.id_for_audit
     from core.utils import TimeUtils
     data['validity_from'] = TimeUtils.now()
 
-    head_insuree_data = {
-        'id': insuree.id,
-        'uuid': insuree.uuid,
-        'chf_id': insuree.chf_id,
-        'last_name': insuree.last_name,
-        'other_names': insuree.other_names,
-        'gender_id': insuree.gender_id,
-        'dob': insuree.dob,
-        'head': insuree.head,
-        'marital': insuree.marital,
-        'passport': insuree.passport,
-        'phone': insuree.phone,
-        'email': insuree.email,
-        'current_address': insuree.current_address,
-        'geolocation': insuree.geolocation,
-        'current_village_id': insuree.current_village_id,
-        'photo_id': insuree.photo_id,
-        'photo_date': insuree.photo_date,
-        'card_issued': insuree.card_issued,
-        'relationship_id': insuree.relationship_id,
-        'profession_id': insuree.profession_id,
-        'education_id': insuree.education_id,
-        'type_of_id_id': insuree.type_of_id_id,
-        'health_facility_id': insuree.health_facility_id,
-        'offline': insuree.offline,
-        'audit_user_id': insuree.audit_user_id
-    }
+    # head_insuree_data = {
+    #     'id': insuree.id,
+    #     'uuid': insuree.uuid,
+    #     'chf_id': insuree.chf_id,
+    #     'last_name': insuree.last_name if insuree.last_name != "" else " ",
+    #     'other_names': insuree.other_names if insuree.other_names != "" else " ",
+    #     'gender_id': insuree.gender_id,
+    #     'dob': insuree.dob,
+    #     'head': insuree.head,
+    #     'marital': insuree.marital,
+    #     'passport': insuree.passport,
+    #     'phone': insuree.phone,
+    #     'email': insuree.email,
+    #     'current_address': insuree.current_address,
+    #     'geolocation': insuree.geolocation,
+    #     'current_village_id': insuree.current_village_id,
+    #     'photo_id': insuree.photo_id,
+    #     'photo_date': insuree.photo_date,
+    #     'card_issued': insuree.card_issued,
+    #     'relationship_id': insuree.relationship_id,
+    #     'profession_id': insuree.profession_id,
+    #     'education_id': insuree.education_id,
+    #     'type_of_id_id': insuree.type_of_id_id,
+    #     'health_facility_id': insuree.health_facility_id,
+    #     'offline': insuree.offline,
+    #     'audit_user_id': insuree.audit_user_id
+    # }
 
-    data['head_insuree'] = head_insuree_data
+    # data['head_insuree'] = head_insuree_data
+    data['head_insuree_id'] = insuree.id
 
-    if (head_insuree_data["current_village_id"]):
-        current_village_id = head_insuree_data["current_village_id"]
-        current_village = location_models.Location.objects.get(id=current_village_id)
+    if insuree.current_village_id:
+        current_village = location_models.Location.objects.get(id=insuree.current_village_id)
         data["location"] = current_village
     else:
         data["location"] = location_models.Location.objects.get(id=1)
 
     family = FamilyService(user).create_or_update(data)
-    FamilyMutation.object_mutated(
-        user, client_mutation_id=client_mutation_id, family=family)
+    # FamilyMutation.object_mutated(
+    #     user, client_mutation_id=client_mutation_id, family=family)
 
     insuree.family = family
     insuree.save()
-    InsureeMutation.object_mutated(
-            user, client_mutation_id=client_mutation_id, insuree=insuree)
+    # InsureeMutation.object_mutated(
+    #         user, client_mutation_id=client_mutation_id, insuree=insuree)
 
     logger.debug(f"Famille créée pour l'assuré {insuree.chf_id}")
 
@@ -407,6 +407,9 @@ class InsureeService:
         if InsureeConfig.insuree_fsp_mandatory and 'health_facility_id' not in data:
             raise ValidationError("mutation.insuree.fsp_required")
 
+        if not insuree.family:
+            print("Auto Create Missing Familly")
+            create_insuree_family(self.user, insuree)
         insuree = Insuree(**data)
         return self._create_or_update(insuree, photo_data)
 
