@@ -5,7 +5,7 @@ import pathlib
 import base64
 import graphene
 from insuree.apps import InsureeConfig
-from insuree.services import validate_insuree_number, InsureeService, FamilyService, InsureePolicyService, create_insuree_family
+from insuree.services import validate_insuree_number, InsureeService, FamilyService, InsureePolicyService
 
 from core.schema import OpenIMISMutation
 from django.contrib.auth.models import AnonymousUser
@@ -247,9 +247,6 @@ class CreateInsureeMutation(OpenIMISMutation):
             client_mutation_id = data.get("client_mutation_id")
             insuree = update_or_create_insuree(data, user)
             InsureeMutation.object_mutated(user, client_mutation_id=client_mutation_id, insuree=insuree)
-            # Check if insuree already has a family ref29150
-            if not insuree.family:
-                create_insuree_family(user, client_mutation_id, insuree)
             return None
         except Exception as exc:
             logger.exception("insuree.mutation.failed_to_create_insuree")
