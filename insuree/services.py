@@ -335,8 +335,8 @@ def create_insuree_family(user, insuree):
     # FamilyMutation.object_mutated(
     #     user, client_mutation_id=client_mutation_id, family=family)
 
-    insuree.family = family
-    insuree.save()
+    # insuree.family = family
+    # insuree.save()
     # InsureeMutation.object_mutated(
     #         user, client_mutation_id=client_mutation_id, insuree=insuree)
 
@@ -349,7 +349,7 @@ class InsureeService:
         self.user = user
 
     @register_service_signal('insuree_service.create_or_update')
-    def create_or_update(self, data):
+    def create_or_update(self, data, create_family=True):
         # client_mutation_id = data.pop('client_mutation_id_save', None)
         if "uuid" in data:
             existing_insuree = Insuree.objects.filter(uuid=data["uuid"]).first()
@@ -386,6 +386,7 @@ class InsureeService:
         data['audit_user_id'] = self.user.id_for_audit
         data['validity_from'] = now
         status = data.get('status', InsureeStatus.ACTIVE)
+        insuree = None
         if status not in [choice[0] for choice in InsureeStatus.choices]:
             raise ValidationError(_("mutation.insuree.wrong_status"))
         if InsureeConfig.is_insuree_photo_required and photo_data is None:
@@ -402,16 +403,22 @@ class InsureeService:
         elif "uuid" in data:
             insuree = Insuree.objects.filter(uuid=data["uuid"]).first()
             if not insuree:
-                insuree = Insuree.objects.create(**data)
-            self.activate_policies_of_insuree(insuree, audit_user_id=data['audit_user_id'])
+                pass
+                # insuree = Insuree.objects.create(**data)
+            else:
+                self.activate_policies_of_insuree(insuree, audit_user_id=data['audit_user_id'])
         if InsureeConfig.insuree_fsp_mandatory and 'health_facility_id' not in data:
             raise ValidationError("mutation.insuree.fsp_required")
 
-        if not insuree.family:
-            print("Auto Create Missing Familly")
-            create_insuree_family(self.user, insuree)
-        insuree = Insuree(**data)
-        return self._create_or_update(insuree, photo_data)
+        if not insuree:
+            insuree = Insuree(**data)
+        insuree = self._create_or_update(insuree, photo_data)
+        if insuree:
+            if not insuree.family and create_family:
+                print("Auto Create Missing Familly")
+                insuree.head = True
+                create_insuree_family(self.user, insuree)
+        return insuree
 
     def disable_policies_of_insuree(self, insuree, status_date):
         policies_to_cancel = InsureePolicy.objects.filter(insuree=insuree.id, validity_to__isnull=True).all()
@@ -542,7 +549,7 @@ class FamilyService:
         if head_insuree_data:
             head_insuree_data["head"] = True
             head_insuree = InsureeService(
-                self.user).create_or_update(head_insuree_data)
+                self.user).create_or_update(head_insuree_data, create_family=False)
             data["head_insuree_id"] = head_insuree.id
         
         elif 'head_insuree_id' not in data:
