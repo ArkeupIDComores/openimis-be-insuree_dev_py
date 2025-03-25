@@ -411,6 +411,13 @@ class InsureeService:
             raise ValidationError("mutation.insuree.fsp_required")
 
         if not insuree:
+            # Check that the MPI is not entirely numeric when the insuree's email is the default one
+            if 'email' in data:
+                email = data.get('email')
+                if email == 'newhivuser_XM7dw70J0M3N@gmail.com':
+                    chf_id = data.get('chf_id')                        
+                    if chf_id.isdigit():
+                        raise ValidationError(_("mutation.insuree.mpi_entirely_numeric_error"))
             insuree = Insuree(**data)
         insuree = self._create_or_update(insuree, photo_data)
         if insuree:
