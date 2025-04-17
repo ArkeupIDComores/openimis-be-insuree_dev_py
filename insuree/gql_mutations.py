@@ -62,6 +62,7 @@ class InsureeBase:
     income_level_id = graphene.Int(required=False)
     professional_situation = graphene.String(max_length=255, required=False)
     bank_coordinates = graphene.String(max_length=255, required=False)
+    household_member = graphene.Int(required=False)
 
 
 class CreateInsureeInputType(InsureeBase, OpenIMISMutation.Input):
@@ -98,6 +99,8 @@ class FamilyBase:
     bank_coordinates = graphene.String(max_length=255, required=False)
     contribution = graphene.types.json.JSONString(required=False)
     head_insuree = graphene.Field(FamilyHeadInsureeInputType, required=False)
+    housing_code = graphene.String(max_length=25, required=False)
+    household_code = graphene.Int(required=False)
 
 
 class FamilyInputType(FamilyBase, OpenIMISMutation.Input):
