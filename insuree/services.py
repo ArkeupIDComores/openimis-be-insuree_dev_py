@@ -553,7 +553,7 @@ class FamilyService:
                     random_nin = random.randint(min_nin, max_nin)
                     formatted_nin = str(random_nin)
                 head_insuree_data["passport"] = formatted_nin
-            family = Family.objects.filter(uuid=data["uuid"]).first()
+            family = Family.objects.filter(uuid=data["uuid"]).first() if data.get("uuid") else None
             if not family:
                 if InsureeConfig.custom_chif_id:
                     chfid_total_length = 12
