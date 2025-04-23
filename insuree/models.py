@@ -432,9 +432,9 @@ class PolicyRenewalDetail(core_models.VersionedModel):
         managed = True
         db_table = 'tblPolicyRenewalDetails'
         
-class InsureeAttachment(models.Model):
+class FamilyAttachment(models.Model):
     """ Class Attachment :
-    Class for isurees attachments
+    Class for families attachments
     """
     idAttachment = models.AutoField(
         primary_key=True, db_column='idAttachment'
@@ -442,10 +442,10 @@ class InsureeAttachment(models.Model):
     folder = models.CharField(db_column='Folder', max_length=250, null=True)
     filename = models.CharField(db_column='FileName', max_length=250, null=True)
     title = models.CharField(db_column='Title', max_length=250, null=True)
-    insuree = models.ForeignKey(
-        'Insuree',
+    family = models.ForeignKey(
+        'Family',
         models.DO_NOTHING,
-        db_column='InsureeID',
+        db_column='FamilyID',
         related_name="attachments"
     )
     date = core.fields.DateField(db_column='AttachmentDate',
