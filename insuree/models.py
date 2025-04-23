@@ -146,6 +146,10 @@ class Family(core_models.VersionedModel, core_models.ExtendableModel, BaseInsure
     family_level = models.CharField(db_column='FamilyLevel', choices=FamilyLevels.choices, max_length=1, default=FamilyLevels.ONE)
     polygamous = models.BooleanField(
         db_column='PolygamousFamily', blank=True, null=True)
+    housing_code = models.CharField(
+        db_column='HousingCode', max_length=25, blank=True, null=True)
+    household_code = models.IntegerField(
+        db_column='HouseholdCode', blank=True, null=True)
     
     def __str__(self):
         return str(self.head_insuree)
@@ -312,6 +316,8 @@ class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseInsur
     status_reason = models.ForeignKey(InsureeStatusReason, models.DO_NOTHING, db_column='StatusReason',
                                       blank=True, null=True, related_name='insurees')
     # row_id = models.BinaryField(db_column='RowID', blank=True, null=True) 
+    household_member = models.IntegerField(
+        db_column='HouseholdMember', blank=True, null=True)
 
     def is_head_of_family(self):
         return self.family and self.family.head_insuree == self

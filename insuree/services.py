@@ -150,6 +150,7 @@ def reset_insuree_before_update(insuree):
     insuree.health_facility = None
     insuree.offline = None
     insuree.json_ext = None
+    insuree.household_member = None
 
 
 def reset_family_before_update(family):
@@ -162,6 +163,8 @@ def reset_family_before_update(family):
     family.confirmation_no = None
     family.confirmation_type = None
     family.json_ext = None
+    family.housing_code = None
+    family.household_code = None
 
 
 def handle_insuree_photo(user, now, insuree, data):
