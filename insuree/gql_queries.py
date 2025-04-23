@@ -2,7 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from .apps import InsureeConfig
-from .models import Insuree, InsureePhoto, InsureeAttachment, Education, Profession, Gender, IdentificationType, \
+from .models import Insuree, InsureePhoto, FamilyAttachment, Education, Profession, Gender, IdentificationType, \
     Family, FamilyType, ConfirmationType, Relation, InsureePolicy, FamilyMutation, InsureeMutation,\
          InsureeStatusReason, IncomeLevels
 from location.schema import LocationGQLType
@@ -51,7 +51,7 @@ class AttachmentGQLType(DjangoObjectType):
         return None
 
     class Meta:
-        model = InsureeAttachment
+        model = FamilyAttachment
         filter_fields = {
             "id": ["exact"]
         }

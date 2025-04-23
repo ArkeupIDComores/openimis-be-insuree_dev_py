@@ -52,8 +52,7 @@ class InsureeBase:
     current_village_id = graphene.Int(required=False)
     photo_id = graphene.Int(required=False)
     photo_date = graphene.Date(required=False)
-    photo = graphene.Field(PhotoInputType, required=False)
-    attachments = graphene.List(AttachmentInputType, required=False)
+    photo = graphene.Field(PhotoInputType, required=False) 
     card_issued = graphene.Boolean(required=False)
     family_id = graphene.Int(required=False)
     relationship_id = graphene.Int(required=False)
@@ -107,7 +106,7 @@ class FamilyBase:
     bank_coordinates = graphene.String(max_length=255, required=False)
     contribution = graphene.types.json.JSONString(required=False)
     head_insuree = graphene.Field(FamilyHeadInsureeInputType, required=False)
-
+    attachments = graphene.List(AttachmentInputType, required=False)
 
 class FamilyInputType(FamilyBase, OpenIMISMutation.Input):
     pass

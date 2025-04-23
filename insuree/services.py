@@ -13,7 +13,7 @@ from django.utils.translation import gettext as _
 
 from core.signals import register_service_signal
 from insuree.apps import InsureeConfig
-from insuree.models import (InsureePhoto, InsureeAttachment, PolicyRenewalDetail, Insuree, Family, InsureePolicy, InsureeStatus,
+from insuree.models import (InsureePhoto, FamilyAttachment, PolicyRenewalDetail, Insuree, Family, InsureePolicy, InsureeStatus,
                             InsureeStatusReason)
 from django.core.exceptions import ValidationError
 from core.models import filter_validity, resolved_id_reference
@@ -260,16 +260,16 @@ def load_photo_file(file_dir, file_name):
     except FileNotFoundError:
         logger.error(f"{photo_path} not found")
 
-def handle_insuree_attachments(user, now, insuree, data):
-    data['insuree_id'] = insuree.id
+def handle_family_attachments(user, now, family, data):
+    data['family_id'] = family.id
     document_bin = data.get('document', None)
     if document_bin and InsureeConfig.insuree_photos_root_path:
-        (file_dir, file_name) = create_file(now, insuree.id, document_bin, data['filename'])
+        (file_dir, file_name) = create_file(now, family.id, document_bin, data['filename'])
         data['folder'] = file_dir
         data['filename'] = file_name
-    insuree_attachment = InsureeAttachment.objects.create(**data)
-    insuree_attachment.save()
-    return insuree_attachment
+    family_attachment = FamilyAttachment.objects.create(**data)
+    family_attachment.save()
+    return family_attachment
 
 def validate_insuree_data(insuree):
     if not insuree.dob:
@@ -313,8 +313,7 @@ class InsureeService:
 
     @register_service_signal('insuree_service.create_or_update')
     def create_or_update(self, data):
-        photo_data = data.pop('photo', None)
-        attachements_data = data.pop('attachments', None)
+        photo_data = data.pop('photo', None)    
         from core import datetime
         now = datetime.datetime.now()
         data['audit_user_id'] = self.user.id_for_audit
@@ -384,7 +383,7 @@ class InsureeService:
             insuree = Insuree(**data)
         else:
             self._update(insuree, data)
-        return self._create_or_update(insuree, photo_data, attachements_data)
+        return self._create_or_update(insuree, photo_data)
 
     def disable_policies_of_insuree(self, insuree, status_date):
         policies_to_cancel = InsureePolicy.objects.filter(insuree=insuree.id, validity_to__isnull=True).all()
@@ -406,13 +405,11 @@ class InsureeService:
                 current_policy = InsureePolicy(**current_policy_dict)
                 current_policy.save()
 
-    def _create_or_update(self, insuree, photo_data=None, attachements_data=None):
+    def _create_or_update(self, insuree, photo_data=None):
         if not InsureeConfig.custom_chif_id:
             if not insuree.chf_id:
                 raise ValidationError(_("config.no_chfid"))
-        validate_insuree(insuree)
-        from core import datetime
-        now = datetime.datetime.now()
+        validate_insuree(insuree) 
         if insuree.id:
             filters = Q(id=insuree.id)
             # remove it from now3 to avoid id at creation
@@ -461,15 +458,7 @@ class InsureeService:
             if photo:
                 insuree.photo = photo
                 insuree.photo_date = photo.date
-                insuree.save()
-        InsureeAttachment.objects.filter(
-            insuree_id=insuree.id
-        ).delete()
-        if attachements_data:
-            for attachment in attachements_data:
-                handle_insuree_attachments(
-                    self.user, now, insuree, attachment
-                )
+                insuree.save() 
         return insuree
 
     def remove(self, insuree):
@@ -560,6 +549,7 @@ class FamilyService:
     def create_or_update(self, data):
         head_insuree_data = data.pop('head_insuree', None)
         family = None
+        attachements_data = data.pop('attachments', None)
         
         if head_insuree_data:
             head_insuree_data["head"] = True
@@ -602,9 +592,9 @@ class FamilyService:
         data['audit_user_id'] = self.user.id_for_audit
         data['validity_from'] = now
         family = Family(**data)
-        return self._create_or_update(family)
+        return self._create_or_update(family, attachements_data)
 
-    def _create_or_update(self, family):
+    def _create_or_update(self, family, attachements_data=None):
         if family.id:
             filters = Q(id=family.id)
             # remove it from now3 to avoid id at creation
@@ -615,20 +605,40 @@ class FamilyService:
             filters = None
         existing_family = Family.objects.filter(*filter_validity(), filters).first() if filters else None
         if existing_family:
-            return self._update(existing_family, family)
+            return self._update(existing_family, family, attachements_data)
         else:
-            return self._create(family)
+            return self._create(family, attachements_data)
 
-    def _create(self, family):
+    def _create(self, family, attachements_data):
+        from core import datetime
+        now = datetime.datetime.now()
         family.save()
         family.head_insuree.family = family
         family.head_insuree.save()
+        FamilyAttachment.objects.filter(
+            family_id=family.id
+        ).delete()
+        if attachements_data:
+            for attachment in attachements_data:
+                handle_family_attachments(
+                    self.user, now, family, attachment
+                )
         return family
 
-    def _update(self, existing_family, family):
+    def _update(self, existing_family, family, attachements_data):
+        from core import datetime
+        now = datetime.datetime.now()
         existing_family.save_history()
         family.id = existing_family.id
         family.save()
+        FamilyAttachment.objects.filter(
+            family_id=family.id
+        ).delete()
+        if attachements_data:
+            for attachment in attachements_data:
+                handle_family_attachments(
+                    self.user, now, family, attachment
+                )
         if family.head_insuree.family != family:
             family.head_insuree.family = family
             family.head_insuree.save()
