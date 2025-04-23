@@ -70,9 +70,15 @@ def validate_insuree_number(insuree_number, insuree_uuid=None):
     query = Insuree.objects.filter(
         chf_id=insuree_number, validity_to__isnull=True)
     insuree = query.first()
-    if insuree_uuid and insuree and uuid.UUID(insuree.uuid) != uuid.UUID(insuree_uuid):
-        return [{"errorCode": InsureeConfig.validation_code_taken_insuree_number,
-                 "message": "Insuree number has to be unique, %s exists in system" % insuree_number}]
+    if insuree_uuid and insuree:
+        if isinstance(insuree_uuid, uuid.UUID):
+            if uuid.UUID(insuree.uuid) != insuree_uuid:
+                return [{"errorCode": InsureeConfig.validation_code_taken_insuree_number,
+                         "message": "Insuree number has to be unique, %s exists in system" % insuree_number}]
+        else:
+            if uuid.UUID(insuree.uuid) != uuid.UUID(insuree_uuid):
+                return [{"errorCode": InsureeConfig.validation_code_taken_insuree_number,
+                         "message": "Insuree number has to be unique, %s exists in system" % insuree_number}]
 
     # Nor used here aigain, but in policy module
     # if ChequeImportLine.objects.filter(chequeImportLineCode=insuree_number,chequeImportLineStatus='new').exists()==False:
@@ -411,6 +417,13 @@ class InsureeService:
             raise ValidationError("mutation.insuree.fsp_required")
 
         if not insuree:
+            # Check that the MPI is not entirely numeric when the insuree's email is the default one
+            if 'email' in data:
+                email = data.get('email')
+                if email == 'newhivuser_XM7dw70J0M3N@gmail.com':
+                    chf_id = data.get('chf_id')                        
+                    if chf_id.isdigit():
+                        raise ValidationError(_("mutation.insuree.mpi_entirely_numeric_error"))
             insuree = Insuree(**data)
         insuree = self._create_or_update(insuree, photo_data)
         if insuree:
