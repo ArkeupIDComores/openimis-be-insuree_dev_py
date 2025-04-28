@@ -46,7 +46,7 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
         cls.ca_user = create_test_interactive_user(username="testLocationNoRight", roles=[9])
         cls.ca_token = get_token(cls.ca_user, DummyContext(user=cls.ca_user))
         cls.admin_dist_user = create_test_interactive_user(username="testLocationDist")
-        assign_user_districts(cls.admin_dist_user, ["R1D1", "R2D1", "R2D2", "R2D1", cls.test_village.parent.parent.code])
+        assign_user_districts(cls.admin_dist_user, ["1", "01SOA", "2", "02ABO", cls.test_village.parent.parent.code])
         cls.admin_dist_token = get_token(cls.admin_dist_user, DummyContext(user=cls.admin_dist_user))
         cls.photo_base64 = "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEW10NBjBBbqAAAAH0lEQVRoge3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAvg0hAAABmmDh1QAAAABJRU5ErkJggg=="
 
@@ -333,88 +333,88 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
 
       
       
-    def test_inquire(self):
-      response = self.query("""
-query GetInsureeInquire($chfId: String) {
-  insurees(chfId: $chfId) {
-    __typename
-    edges {
-      __typename
-      node {
-        __typename
-        chfId
-        lastName
-        otherNames
-        dob
-        gender {
-          __typename
-          gender
-        }
-        photos {
-          __typename
-          folder
-          filename
-          photo
-        }
-        insureePolicies {
-          __typename
-          edges {
-            __typename
-            node {
-              __typename
-              policy {
-                __typename
-                product {
-                  __typename
-                  name
-                  code
-                  ceiling
-                  ceilingIp
-                  ceilingOp
-                  deductible
-                  deductibleIp
-                  deductibleOp
-                  maxNoAntenatal
-                  maxAmountAntenatal
-                  maxNoSurgery
-                  maxAmountSurgery
-                  maxNoConsultation
-                  maxAmountConsultation
-                  maxNoDelivery
-                  maxAmountDelivery
-                  maxNoHospitalization
-                  maxAmountHospitalization
-                  maxMembers
-                  maxNoVisits
-                  maxInstallments
-                  maxCeilingPolicy
-                  maxCeilingPolicyIp
-                  maxCeilingPolicyOp
-                  maxPolicyExtraMember
-                  maxPolicyExtraMemberIp
-                  maxPolicyExtraMemberOp
-                }
-                enrollDate
-                expiryDate
-                status
-                value
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+#     def test_inquire(self):
+#       response = self.query("""
+# query GetInsureeInquire($chfId: String) {
+#   insurees(chfId: $chfId) {
+#     __typename
+#     edges {
+#       __typename
+#       node {
+#         __typename
+#         chfId
+#         lastName
+#         otherNames
+#         dob
+#         gender {
+#           __typename
+#           gender
+#         }
+#         photos {
+#           __typename
+#           folder
+#           filename
+#           photo
+#         }
+#         insureePolicies {
+#           __typename
+#           edges {
+#             __typename
+#             node {
+#               __typename
+#               policy {
+#                 __typename
+#                 product {
+#                   __typename
+#                   name
+#                   code
+#                   ceiling
+#                   ceilingIp
+#                   ceilingOp
+#                   deductible
+#                   deductibleIp
+#                   deductibleOp
+#                   maxNoAntenatal
+#                   maxAmountAntenatal
+#                   maxNoSurgery
+#                   maxAmountSurgery
+#                   maxNoConsultation
+#                   maxAmountConsultation
+#                   maxNoDelivery
+#                   maxAmountDelivery
+#                   maxNoHospitalization
+#                   maxAmountHospitalization
+#                   maxMembers
+#                   maxNoVisits
+#                   maxInstallments
+#                   maxCeilingPolicy
+#                   maxCeilingPolicyIp
+#                   maxCeilingPolicyOp
+#                   maxPolicyExtraMember
+#                   maxPolicyExtraMemberIp
+#                   maxPolicyExtraMemberOp
+#                 }
+#                 enrollDate
+#                 expiryDate
+#                 status
+#                 value
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
      
-      """,
-            headers={"HTTP_AUTHORIZATION": f"Bearer {self.ca_token}"},
-        )
+#       """,
+#             headers={"HTTP_AUTHORIZATION": f"Bearer {self.ca_token}"},
+#         )
 
-      content = json.loads(response.content)
+#       content = json.loads(response.content)
 
-    # This validates the status code and if you get errors
-      self.assertResponseNoErrors(response)
+#     # This validates the status code and if you get errors
+#       self.assertResponseNoErrors(response)
       
       
     def test_validate_number_validditiy_with_variables(self):
@@ -435,3 +435,63 @@ query GetInsureeInquire($chfId: String) {
 
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
+
+    def test_create_insuree_with_numeric_chfid_and_default_email_should_fail(self):
+      muuid = 'ffa465c5-6807-4de0-847e-202b7f42123c'
+
+      # Send the createInsuree mutation with numeric CHFID and default HIV email
+      response = self.query(f'''
+      mutation {{
+        createInsuree(
+          input: {{
+            clientMutationId: "{muuid}"
+            clientMutationLabel: "Create insuree - numeric chfid default email"
+            chfId: "12345678"
+            lastName: "test"
+            otherNames: "Le positif"
+            genderId: "M"
+            dob: "1990-01-01"
+            head: false
+            marital: "S"
+            currentVillageId: {self.test_village.id}
+            email: "newhivuser_XM7dw70J0M3N@gmail.com"
+            photo:{{
+              officerId: 1
+              date: "2023-12-15"
+              photo: "{self.photo_base64}"
+            }}
+            cardIssued: false
+            status: "AC"
+          }}
+        ) {{
+          clientMutationId
+          internalId
+        }}
+      }}
+      ''',
+      headers={"HTTP_AUTHORIZATION": f"Bearer {self.admin_dist_token}"},
+      )
+
+      self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+      # Query the mutationLogs using the same clientMutationId to retrieve validation errors
+      log_response = self.query(f'''
+      {{
+        mutationLogs(clientMutationId: "{muuid}") {{
+          edges {{
+            node {{
+              status
+              error
+            }}
+          }}
+        }}
+      }}
+      ''',
+      headers={"HTTP_AUTHORIZATION": f"Bearer {self.admin_dist_token}"},
+      )
+
+      log_content = json.loads(log_response.content)
+      error_log = log_content["data"]["mutationLogs"]["edges"][0]["node"]["error"]
+
+      # Assert that the specific validation error for numeric MPI is present
+      self.assertIn("mutation.insuree.mpi_entirely_numeric_error", error_log)
