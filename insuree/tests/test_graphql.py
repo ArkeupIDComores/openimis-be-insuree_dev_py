@@ -122,7 +122,7 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
     {
       node
       {
-        id,uuid,poverty,confirmationNo,validityFrom,validityTo,headInsuree{id,uuid,chfId,lastName,otherNames,email,phone, dob},location{id, uuid, code, name, type, parent{id,uuid,code,name,type,parent{id,uuid,code,name,type,parent{id,uuid,code,name,type}}}}
+        id,uuid,poverty,confirmationNo,validityFrom,validityTo,headInsuree{id,uuid,chfId,lastName,otherNames,email,phone, dob},location{id, uuid, code, name, type, parent{id,uuid,code,name,type,parent{id,uuid,code,name,type,parent{id,uuid,code,name,type}}}},attachments {idAttachment, folder, title, mime, filename, date, document}
       }
     }
       }
@@ -242,6 +242,7 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
     def test_create_family(self):
       muuid='50f8f2c9-7685-4cd5-a7d8-b1fa78d46470'
       fuuid='50f8f2c9-7685-4cd5-a770-b1fa34d46470'
+      attachment_base64 = "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEW10NBjBBbqAAAAH0lEQVRoge3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAvg0hAAABmmDh1QAAAABJRU5ErkJggg=="
       response = self.query(f'''
     mutation {{
       createFamily(
@@ -269,6 +270,16 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
     poverty: false
     uuid: "{fuuid}"
     jsonExt: "{{}}"
+    attachments: [
+      {{
+        folder: "family_docs"
+        title: "CNI"
+        mime: "application/pdf"
+        filename: "cni.pdf"
+        date: "2025-04-28"
+        document: "{attachment_base64}"
+      }}
+    ]
         }}
       ) {{
         clientMutationId
@@ -313,6 +324,16 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
     poverty: true
     uuid: "{fuuid}"
     jsonExt: "{{}}"
+    attachments: [
+      {{
+        folder: "family_docs"
+        title: "CNI"
+        mime: "application/pdf"
+        filename: "cni.pdf"
+        date: "2025-04-28"
+        document: "{attachment_base64}"
+      }}
+    ]
         }}
       ) {{
         clientMutationId
