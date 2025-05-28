@@ -398,13 +398,14 @@ class InsureeService:
         from policy.models import Policy
         policies_to_activate = Policy.objects.filter(family=insuree.family, validity_to__isnull=True)
         for policy in policies_to_activate:
-            if policy.expiry_date >= now:
-                current_policy_dict = {"effective_date": now, "expiry_date": policy.expiry_date,
-                                       "audit_user_id": audit_user_id, "offline": policy.offline,
-                                       "start_date": policy.start_date, "policy": policy, "insuree": insuree,
-                                       "enrollment_date": policy.enroll_date}
-                current_policy = InsureePolicy(**current_policy_dict)
-                current_policy.save()
+            if policy.expiry_date:
+                if policy.expiry_date >= now:
+                    current_policy_dict = {"effective_date": now, "expiry_date": policy.expiry_date,
+                                        "audit_user_id": audit_user_id, "offline": policy.offline,
+                                        "start_date": policy.start_date, "policy": policy, "insuree": insuree,
+                                        "enrollment_date": policy.enroll_date}
+                    current_policy = InsureePolicy(**current_policy_dict)
+                    current_policy.save()
 
     def _create_or_update(self, insuree, photo_data=None):
         if not InsureeConfig.custom_chif_id:
