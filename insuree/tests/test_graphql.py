@@ -39,6 +39,15 @@ class InsureeGQLTestCase(openIMISGraphQLTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        
+        # Créer les districts nécessaires
+        district_codes = ["R1D1", "R2D1", "R2D2"]
+        for code in district_codes:
+            create_test_location(
+                loc_type="D",
+                custom_props={"code": code}
+            )
+    
         cls.test_village = create_test_village()
         cls.test_insuree = create_test_insuree(with_family=True, is_head=True, custom_props={'current_village':cls.test_village}, family_custom_props={'location':cls.test_village})
         cls.admin_user = create_test_interactive_user(username="testLocationAdmin")
