@@ -593,6 +593,7 @@ class FamilyService:
 
         data['audit_user_id'] = self.user.id_for_audit
         data['validity_from'] = now
+        data.pop("contribution", None) 
         family = Family(**data)
         return self._create_or_update(family, attachements_data)
 
