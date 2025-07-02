@@ -246,6 +246,15 @@ class InsureeStatusReason(core_models.VersionedModel):
         db_table = 'tblInsureeStatusReason'
 
 
+class TypesHabitation(models.Model):
+    idTypesHabitation = models.IntegerField(
+        primary_key=True, db_column='idTypesHabitation'
+    )
+    title = models.CharField(db_column='title', max_length=255)
+
+    class Meta:
+        db_table = "tblTypesHabitation"
+
 class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseInsureeFamily):
     id = models.AutoField(db_column='InsureeID', primary_key=True)
     uuid = models.CharField(db_column='InsureeUUID', max_length=36, default=uuid.uuid4, unique=True)
@@ -312,6 +321,52 @@ class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseInsur
     status_reason = models.ForeignKey(InsureeStatusReason, models.DO_NOTHING, db_column='StatusReason',
                                       blank=True, null=True, related_name='insurees')
     # row_id = models.BinaryField(db_column='RowID', blank=True, null=True) 
+
+    types_habitation = models.ForeignKey(TypesHabitation, models.DO_NOTHING, db_column='TypesHabitation', blank=True, null=True)
+
+    MALADIE_INVALIDANTE_CHOICES = [
+        (1, "Sans maladie invalidante"),
+        (0, "Avec maladie invalidante"),
+    ]
+
+    HANDICAP_CHOICES = [
+        (1, "Sans handicap"),
+        (0, "Avec handicap"),
+    ]
+
+    COUVERTURE_CHOICES = [
+        (1, "Avec couverture assurance / mutuelle"),
+        (0, "Sans couverture"),
+    ]
+
+    MILIEU_DE_RESIDENCE = [
+        (2, "Rural"),
+        (1, "Urbain"),
+    ]
+
+    maladie_invalidante_non = models.IntegerField(
+        choices=MALADIE_INVALIDANTE_CHOICES,
+        default=1,
+        db_column="MaladieInvalidante_Non"
+    )
+
+    handicap_non = models.IntegerField(
+        choices=HANDICAP_CHOICES,
+        default=1,
+        db_column="Handicap_Non"
+    )
+
+    couverture_assurance_mutuelle = models.IntegerField(
+        choices=COUVERTURE_CHOICES,
+        default=0,
+        db_column="CouvertureAssuranceMutuelle"
+    )
+
+    milieu_de_residence = models.IntegerField(
+        choices=MILIEU_DE_RESIDENCE,
+        default=1,
+        db_column="MilieuDeResidence"
+    )
 
     def is_head_of_family(self):
         return self.family and self.family.head_insuree == self
