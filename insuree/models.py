@@ -281,7 +281,7 @@ class CouvertureAssuranceMutuelle(models.Model):
 
 class TypesHabitation(models.Model):
     code = models.IntegerField(db_column='Code', primary_key=True)
-    TypesDhabitation = models.CharField(db_column='TypesDhabitation', max_length=150, blank=True, null=True)
+    TypesHabitation = models.CharField(db_column='TypesDhabitation', max_length=150, blank=True, null=True)
     alt_language = models.CharField(db_column='AltLanguage', max_length=150, blank=True, null=True)
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
@@ -290,9 +290,9 @@ class TypesHabitation(models.Model):
         db_table = 'tblTypesHabitation'
 
 
-class Milieuderésidence(models.Model):
+class Milieuderesidence(models.Model):
     code = models.IntegerField(db_column='Code', primary_key=True)
-    MilieuDeResidence = models.CharField(db_column='MilieuDeResidence', max_length=100, blank=True, null=True)
+    Milieuderesidence = models.CharField(db_column='MilieuDeResidence', max_length=100, blank=True, null=True)
     alt_language = models.CharField(db_column='AltLanguage', max_length=100, blank=True, null=True)
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
