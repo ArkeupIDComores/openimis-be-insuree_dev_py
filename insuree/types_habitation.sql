@@ -1,4 +1,4 @@
-INSERT INTO "TypesHabitation" VALUES
+INSERT INTO "tblTypesHabitation" VALUES
 (1,'Villa'),
 (2,'En dur et à étage'),
 (3,'En dur (ciment, brique cuite, ...)'),
