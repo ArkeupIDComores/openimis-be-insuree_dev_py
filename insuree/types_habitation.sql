@@ -12,3 +12,7 @@ INSERT INTO "TypesHabitation" VALUES
 (12,'En terre battue, sol en ciment, toit en tôle'),
 (13,'En terre battue, sol en ciment, toit en paille'),
 (15,'En terre battue, sol en terre, toit en paille');
+
+
+
+
