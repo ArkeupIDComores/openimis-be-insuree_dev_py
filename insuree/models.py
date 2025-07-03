@@ -375,7 +375,7 @@ class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseInsur
 
     couverture_assurance_mutuelle = models.ForeignKey(CouvertureAssuranceMutuelle, models.DO_NOTHING, db_column='CouvertureAssuranceMutuelle', blank=True, null=True)
 
-    milieu_de_residence = models.ForeignKey(Milieuderésidence, models.DO_NOTHING, db_column='MilieuDeResidence', blank=True, null=True)
+    milieu_de_residence = models.ForeignKey(Milieuderesidence, models.DO_NOTHING, db_column='MilieuDeResidence', blank=True, null=True)
 
     def is_head_of_family(self):
         return self.family and self.family.head_insuree == self
