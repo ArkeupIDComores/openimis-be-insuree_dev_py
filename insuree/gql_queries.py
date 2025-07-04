@@ -134,9 +134,9 @@ class InsureeGQLType(DjangoObjectType):
     client_mutation_id = graphene.String()
     photo = PhotoGQLType()
 
-    maladieInvalidanteNon = graphene.Boolean()
-    handicapNon = graphene.Boolean()
-    couvertureAssuranceMutuelle = graphene.Boolean()
+    maladieInvalidanteNon = graphene.String()
+    handicapNon = graphene.String()
+    couvertureAssuranceMutuelle = graphene.String()
     typesHabitation = graphene.String()
     milieuDeResidence = graphene.String()
 
