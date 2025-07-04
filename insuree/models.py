@@ -298,7 +298,7 @@ class Milieuderesidence(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'tblMilieuderésidence'
+        db_table = 'tblMilieuderesidence'
 
 
 class Insuree(core_models.VersionedModel, core_models.ExtendableModel, BaseInsureeFamily):
