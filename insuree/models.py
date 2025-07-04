@@ -253,6 +253,7 @@ class Maladieinvalidante_Non(models.Model):
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
     class Meta:
+        managed = True
         db_table = 'tblMaladieinvalidante_Non'
 
 
@@ -263,6 +264,7 @@ class Handicap_Non(models.Model):
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
     class Meta:
+        managed = True
         db_table = 'tblHandicap_Non'
 
 
@@ -273,6 +275,7 @@ class CouvertureAssuranceMutuelle(models.Model):
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
     class Meta:
+        managed = True
         db_table = 'tblCouvertureAssuranceMutuelle'
 
 
@@ -283,6 +286,7 @@ class TypesHabitation(models.Model):
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
     class Meta:
+        managed = True
         db_table = 'tblTypesHabitation'
 
 
@@ -293,6 +297,7 @@ class Milieuderesidence(models.Model):
     sort_order = models.IntegerField(db_column='SortOrder', blank=True, null=True)
 
     class Meta:
+        managed = True
         db_table = 'tblMilieuderésidence'
 
 

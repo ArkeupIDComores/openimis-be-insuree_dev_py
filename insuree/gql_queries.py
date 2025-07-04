@@ -134,6 +134,27 @@ class InsureeGQLType(DjangoObjectType):
     client_mutation_id = graphene.String()
     photo = PhotoGQLType()
 
+    maladieInvalidanteNon = graphene.Boolean()
+    handicapNon = graphene.Boolean()
+    couvertureAssuranceMutuelle = graphene.Boolean()
+    typesHabitation = graphene.String()
+    milieuDeResidence = graphene.String()
+
+    def resolve_maladieInvalidanteNon(self, info):
+        return self.maladieInvalidanteNon
+
+    def resolve_handicapNon(self, info):
+        return self.handicapNon
+
+    def resolve_couvertureAssuranceMutuelle(self, info):
+        return self.couvertureAssuranceMutuelle
+
+    def resolve_typesHabitation(self, info):
+        return self.typesHabitation
+
+    def resolve_milieuDeResidence(self, info):
+        return self.milieuDeResidence
+
     def resolve_current_village(self, info):
         if not info.context.user.has_perms(InsureeConfig.gql_query_insuree_perms):
             raise PermissionDenied(_("unauthorized"))
