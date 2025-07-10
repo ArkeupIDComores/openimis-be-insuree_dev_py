@@ -11,6 +11,22 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunSQL(
+            sql='DROP TABLE IF EXISTS public."tblHandicap_Non";',
+            reverse_sql=migrations.RunSQL.noop
+        ),
+        migrations.RunSQL(
+            sql='DROP TABLE IF EXISTS public."tblMaladieinvalidante_Non";',
+            reverse_sql=migrations.RunSQL.noop
+        ),
+        migrations.RunSQL(
+            sql='DROP TABLE IF EXISTS public."tblCouvertureAssuranceMutuelle";',
+            reverse_sql=migrations.RunSQL.noop
+        ),
+        migrations.RunSQL(
+            sql='DROP TABLE IF EXISTS public."tblTypesHabitation";',
+            reverse_sql=migrations.RunSQL.noop
+        ),
         migrations.CreateModel(
             name='CouvertureAssuranceMutuelle',
             fields=[

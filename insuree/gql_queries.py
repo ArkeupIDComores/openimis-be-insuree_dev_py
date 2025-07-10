@@ -176,19 +176,19 @@ class InsureeGQLType(DjangoObjectType):
     milieuDeResidence = graphene.Field(MilieuDeResidenceGQLType)
 
     def resolve_maladieInvalidanteNon(self, info):
-        return self.maladieInvalidanteNon
+        return self.maladie_invalidante_non
 
     def resolve_handicapNon(self, info):
-        return self.handicapNon
+        return self.handicap_non
 
     def resolve_couvertureAssuranceMutuelle(self, info):
-        return self.couvertureAssuranceMutuelle
+        return self.couverture_assurance_mutuelle
 
     def resolve_typesHabitation(self, info):
-        return self.typesHabitation
+        return self.types_habitation
 
     def resolve_milieuDeResidence(self, info):
-        return self.milieuDeResidence
+        return self.milieu_de_residence
 
     def resolve_current_village(self, info):
         if not info.context.user.has_perms(InsureeConfig.gql_query_insuree_perms):
