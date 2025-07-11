@@ -125,6 +125,30 @@ class Query(ExportableQueryMixin, graphene.ObjectType):
         description="Checks that the specified insuree number is valid"
     )
 
+    maladieInvalidanteNonOptions = graphene.List(MaladieInvalidanteNonGQLType)
+    handicapNonOptions = graphene.List(HandicapNonGQLType)
+    couvertureAssuranceMutuelleOptions = graphene.List(CouvertureAssuranceMutuelleGQLType)
+    typesHabitationOptions = graphene.List(TypesHabitationGQLType)
+    milieuDeResidenceOptions = graphene.List(MilieuDeResidenceGQLType)
+
+
+    def resolve_maladieInvalidanteNonOptions(self, info, **kwargs):
+        return Maladieinvalidante_Non.objects.all()
+
+    def resolve_handicapNonOptions(self, info, **kwargs):
+        return Handicap_Non.objects.all()
+
+    def resolve_couvertureAssuranceMutuelleOptions(self, info, **kwargs):
+        return CouvertureAssuranceMutuelle.objects.all()
+
+    def resolve_typesHabitationOptions(self, info, **kwargs):
+        return TypesHabitation.objects.all()
+
+    def resolve_milieuDeResidenceOptions(self, info, **kwargs):
+        return Milieuderesidence.objects.all()
+
+
+
     def resolve_insuree_number_validity(self, info, **kwargs):
         if not info.context.user.has_perms(InsureeConfig.gql_query_insurees_perms):
             raise PermissionDenied(_("unauthorized"))
